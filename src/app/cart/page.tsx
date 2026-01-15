@@ -3,7 +3,8 @@
 import PaymentForm from "@/components/PaymentForm";
 import ShippingForm from "@/components/ShippingForm";
 import { CartItemsType } from "@/types";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Trash2 } from "lucide-react";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
@@ -119,17 +120,50 @@ const CartPage = () => {
         {/* Steps */}
         <div className="w-full lg:w-7/12 shadow-lg border border-gray-100 p-8 rounded-lg flex flex-col gap-8">
           {activeStep === 1 ? (
-            "products"
+            cartItems.map((item) => (
+              <div className="flex items-center justify-between" key={item.id}>
+                <div className="flex gap-8">
+                  <div className="relative w-32 h-32 bg-gray-50 rounded-lg overflow-hidden">
+                    <Image
+                      src={item.images[item.selectedColor]}
+                      alt={item.name}
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                  <div className="flex flex-col justify-between">
+                    <div className="flex flex-col gap-1">
+                      <p className="text-sm font-medium">{item.name}</p>
+                      <p className="text-xs text-gray-500">
+                        Quantity: {item.quantity}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Size: {item.selectedSize}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Color: {item.selectedColor}
+                      </p>
+                    </div>
+                    <p className="font-medium">${item.price.toFixed(2)}</p>
+                  </div>
+                </div>
+                <button className="w-8 h-8 rounded-full bg-red-100 hover:bg-red-300 transition-all duration-300 text-red-400 flex items-center justify-center cursor-pointer">
+                  <Trash2 className="w-3 h-3" />
+                </button>
+              </div>
+            ))
           ) : activeStep === 2 ? (
-            <ShippingForm />
+            <ShippingForm setShippingForm={setShippingForm} />
           ) : activeStep === 3 && shippingForm ? (
             <PaymentForm />
           ) : (
-            <p>Please Fill In The Shipping Form</p>
+            <p className="text-sm text-gray-500">
+              Please Fill In The Shipping Form
+            </p>
           )}
         </div>
         {/* Details */}
-        <div className="w-full lg:w-5/12 shadow-lg border border-gray-100 p-8 rounded-lg flex flex-col gap-8 ">
+        <div className="w-full lg:w-5/12 shadow-lg border border-gray-100 p-8 rounded-lg flex flex-col gap-8 h-max ">
           <h2 className="font-semibold">Cart Details</h2>
           <div className="flex flex-col gap-4">
             <div className="flex justify-between text-sm">
